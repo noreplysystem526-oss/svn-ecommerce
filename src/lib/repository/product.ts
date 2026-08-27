@@ -23,7 +23,7 @@ export async function getProducts() {
     .order("created_at", { ascending: false })
 
   if (error) {
-    console.error("Error fetching products:", error)
+    console.error(JSON.stringify(error, null, 2))
     throw new Error("Failed to fetch products")
   }
 

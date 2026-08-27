@@ -1,5 +1,4 @@
 import { AppSidebar } from "@/components/admin/app-sidebar"
-import { DataTable } from "@/components/admin/data-table"
 import { SiteHeader } from "@/components/admin/site-header"
 import {
   SidebarInset,

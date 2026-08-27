@@ -26,11 +26,9 @@ import {
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
-  IconCircleCheckFilled,
   IconDotsVertical,
   IconGripVertical,
   IconLayoutColumns,
-  IconLoader,
   IconPlus,
   IconTrendingUp,
 } from "@tabler/icons-react"
@@ -148,9 +146,6 @@ export const schema = z.object({
   // limit: z.string(),
   // reviewer: z.string(),
 })
-
-
-
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: string }) {

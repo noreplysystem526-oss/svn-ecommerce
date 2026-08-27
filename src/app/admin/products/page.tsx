@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Plus, Pencil } from "lucide-react"
+import { Plus } from "lucide-react"
 
 import { getProducts } from "@/lib/repository/product";
 import { Button } from "@/components/ui/button"
@@ -12,6 +12,8 @@ import {
 import { DataTable } from "@/components/admin/data-table";
 
 export default async function ProductsPage() {
+  // const res = await fetch("https://cppqtksyzoljynrijopa.supabase.co")
+  // console.log(res)
   const data = await getProducts()
 
   return (
@@ -39,62 +41,7 @@ export default async function ProductsPage() {
 
         <CardContent>
           <div className="overflow-x-auto">
-            {/* <table className="w-full">
-              <thead>
-                <tr className="border-b text-left">
-                  <th className="p-3">Product</th>
-                  <th className="p-3">Category</th>
-                  <th className="p-3">Price</th>
-                  <th className="p-3">Stock</th>
-                  <th className="p-3 text-right">Action</th>
-                </tr>
-              </thead>
 
-              <tbody>
-                {products.map((product as any) => (
-                  <tr
-                    key={product.id}
-                    className="border-b"
-                  >
-                    <td className="p-3">
-                      <div className="font-medium">
-                        {product.name}
-                      </div>
-
-                      <div className="text-sm text-muted-foreground">
-                        {product.sku}
-                      </div>
-                    </td>
-
-                    <td className="p-3">
-                      {product.category?.name ?? "-"}
-                    </td>
-
-                    <td className="p-3">
-                      {product.price.toLocaleString("vi-VN")} ₫
-                    </td>
-
-                    <td className="p-3">
-                      {product.stock}
-                    </td>
-
-                    <td className="p-3 text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        asChild
-                      >
-                        <Link
-                          href={`/admin/products/${product.id}`}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table> */}
             <DataTable data={data} />
 
             {data.length === 0 && (

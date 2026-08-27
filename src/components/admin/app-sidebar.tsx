@@ -3,20 +3,20 @@
 import * as React from "react"
 import {
   IconCamera,
-  IconChartBar,
   IconDashboard,
   IconDatabase,
   IconFileAi,
   IconFileDescription,
   IconFileWord,
-  IconFolder,
   IconHelp,
   IconInnerShadowTop,
-  IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
   IconUsers,
+  IconCategory2,
+  IconBuildingWarehouse,
+  IconClipboardList
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/admin/nav-documents"
@@ -42,34 +42,29 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "",
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
+      title: "Categories",
       url: "#",
-      icon: IconListDetails,
+      icon: IconCategory2,
     },
     {
       title: "Products",
       url: "/admin/products",
-      icon: IconListDetails,
+      icon: IconBuildingWarehouse,
     },
     {
-      title: "Analytics",
+      title: "Orders",
       url: "#",
-      icon: IconChartBar,
+      icon: IconClipboardList,
     },
     {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
+      title: "Customers",
       url: "#",
       icon: IconUsers,
-    },
+    }
   ],
   navClouds: [
     {
@@ -165,9 +160,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <a href="#">
+              <a href="">
                 <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">SVN-ECOMMERCE</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
