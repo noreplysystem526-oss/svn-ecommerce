@@ -31,6 +31,10 @@ export default async function ResourcePage({
     notFound()
   }
   const data = await repositories.getAll();
+
+  if(!data){
+    return []
+  }
   console.log("data", data)
   
     
