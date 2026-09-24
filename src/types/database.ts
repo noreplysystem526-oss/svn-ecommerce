@@ -59,3 +59,13 @@ export type ProductImagesInsert =
 
 export type ProductImagesUpdate =
   Database["public"]["Tables"]["product_images"]["Update"];
+
+  // Product Brands
+export type Brands =
+  Database["public"]["Tables"]["brands"]["Row"];
+
+export type BrandsInsert =
+  Database["public"]["Tables"]["brands"]["Insert"];
+
+export type BrandsUpdate =
+  Database["public"]["Tables"]["brands"]["Update"];

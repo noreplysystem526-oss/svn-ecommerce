@@ -16,7 +16,9 @@ import {
   IconUsers,
   IconCategory2,
   IconBuildingWarehouse,
-  IconClipboardList
+  IconClipboardList,
+  IconBrandWindows,
+  IconPhotoAlt
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/admin/nav-documents"
@@ -33,6 +35,12 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
+type SideBarUser = {
+  name: string
+  email: string
+  avatar: string
+}
+
 const data = {
   user: {
     name: "shadcn",
@@ -47,7 +55,7 @@ const data = {
     },
     {
       title: "Categories",
-      url: "#",
+      url: "/admin/categories",
       icon: IconCategory2,
     },
     {
@@ -57,13 +65,23 @@ const data = {
     },
     {
       title: "Orders",
-      url: "#",
+      url: "/admin/orders",
       icon: IconClipboardList,
     },
     {
       title: "Customers",
-      url: "#",
+      url: "/admin/customers",
       icon: IconUsers,
+    },
+    {
+      title: "Brands",
+      url: "/admin/brands",
+      icon: IconBrandWindows,
+    },
+    {
+      title: "Media Library",
+      url: "/admin/media-library",
+      icon: IconPhotoAlt,
     }
   ],
   navClouds: [
@@ -150,7 +168,12 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSideBarProps
+extends React.ComponentProps<typeof Sidebar> {
+  user: SideBarUser
+}
+
+export function AppSidebar({ user, ...props }: AppSideBarProps) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -174,7 +197,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )

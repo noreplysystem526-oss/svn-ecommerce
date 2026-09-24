@@ -1,13 +1,35 @@
+import type { ReactNode } from "react"
+import { redirect } from "next/navigation"
+import { createClient } from "@/lib/supabase/server"
 import { AppSidebar } from "@/components/admin/app-sidebar"
 import { SiteHeader } from "@/components/admin/site-header"
 import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
+import { Toaster } from 'sonner';
 
-export default function AdminLayout({ 
+export default async function AdminLayout({ 
     children,
-}: Readonly<{children: React.ReactNode; }>) {
+}: {
+    children: ReactNode
+}) {
+
+const supabase = await createClient()
+const { 
+    data: {user},
+ } = await supabase.auth.getUser()
+
+ if(!user){
+    redirect("/login")
+ }
+
+ const NavUser = {
+    name: user.email ?? "",
+    email: user.email ?? "",
+    avatar: "/avatars/shadcn.jpg"
+ }
+
     return(
         <div>
             <SidebarProvider
@@ -18,7 +40,7 @@ export default function AdminLayout({
                 } as React.CSSProperties
             }
             >
-            <AppSidebar variant="inset" />
+            <AppSidebar variant="inset" user={NavUser} />
             <SidebarInset>
                 <SiteHeader />
                 <div className="flex flex-1 flex-col">
@@ -30,7 +52,7 @@ export default function AdminLayout({
                 </div>
             </SidebarInset>
             </SidebarProvider>
-            
+            <Toaster />
         </div>
     )
 }

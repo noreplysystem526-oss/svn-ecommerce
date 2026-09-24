@@ -12,10 +12,16 @@ export async function getProducts() {
         name,
         slug
       ),
-      product_images (
+      brand:brands (
+        id,
+        name,
+        slug
+      ),
+      product_images(
         id,
         url,
         alt,
+        is_primary,
         sort_order
       )
     `)
@@ -25,6 +31,21 @@ export async function getProducts() {
     console.error(JSON.stringify(error, null, 2))
     throw new Error("Failed to fetch products")
   }
+
+  return data.map((product) => {
+    const images = [...(product.product_images ?? [])].sort(
+      (a,b) => (a.sort_order - b.sort_order)
+    )
+    const image = 
+      images.find((item) => item.is_primary)  ??
+      images[0] ?? 
+      null
+
+      return {
+        ...product,
+        image,
+      }
+  })
 
   return data
 }
@@ -40,12 +61,6 @@ export async function getProductById(id: string) {
         id,
         name,
         slug
-      ),
-      product_images (
-        id,
-        url,
-        alt,
-        sort_order
       )
     `)
     .eq("id", id)
@@ -71,18 +86,17 @@ export async function getProductBySlug(slug: string) {
         name,
         slug
       ),
-      product_images (
+      brand:brands (
         id,
-        url,
-        alt,
-        sort_order
+        name,
+        slug
       )
     `)
     .eq("slug", slug)
     .single()
 
   if (error) {
-    console.error("Error fetching product by slug:", error)
+    console.error("Error fetching product by slug:", error.message)
     throw new Error("Product not found")
   }
 

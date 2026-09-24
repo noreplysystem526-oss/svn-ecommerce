@@ -55,3 +55,23 @@ export async function getCategoryBySlug(slug: string) {
 
   return data
 }
+
+export async function getCategoriesForSelect(){
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("categories")
+    .select(`
+      id,
+      name
+    `)
+    .eq("is_active", true)
+    .order("name")
+
+  if (error) {
+    console.error("Error fetching categories for select:", error)
+    throw new Error("Failed to fetch categories for select")
+  }
+
+  return data
+}

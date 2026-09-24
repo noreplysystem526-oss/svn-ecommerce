@@ -14,6 +14,12 @@ export const productConfig: ResourceConfig = {
             required: true,
         },
         {
+            name: "image",
+            label: "Image",
+            type: "media",
+            required: false,
+        },
+        {
             name: "price",
             label: "Price",
             type: "number",
@@ -42,9 +48,13 @@ export const productConfig: ResourceConfig = {
                     value: "active"
                 },
                 {
-                    label: "In Process",
-                    value: "in_process"
+                    label: "Draft",
+                    value: "draft"
                 },
+                {
+                    label: "Archived",
+                    value: "archieved"
+                }
             ]
         },
         {
@@ -66,8 +76,26 @@ export const productConfig: ResourceConfig = {
         },
         {
             name: "category_id",
-            label: "Category Id",
-            type: "relation"
+            label: "Category",
+            type: "relation",
+            relation: {
+                resource: "categories",
+                labelField: "name",
+                valueField: "id",
+                displayField: "category"
+            }
+        },
+        {
+            name: "brand_id",
+            label: "Brand",
+            type: "relation",
+            relation: {
+                resource: "brands",
+                labelField: "name",
+                valueField: "id",
+                displayField: "brand"
+            }
         }
+
     ]
 }

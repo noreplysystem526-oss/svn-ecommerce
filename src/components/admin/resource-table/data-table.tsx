@@ -1,12 +1,11 @@
 "use client"
 
 import * as React from "react"
-
+import { useRouter } from "next/navigation"
 import {
   useTable,
   type ColumnDef,
   type ColumnFiltersState,
-  type RowData,
   type SortingState,
   type ColumnVisibilityState,
 } from "@tanstack/react-table"
@@ -31,19 +30,18 @@ import {
   features,
   type DataTableFeatures,
 } from "@/components/admin/resource-table/data-table-features"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-
 import type { ResourceConfig, ResourceData } from "@/lib/resources/types"
-
+import { deleteResourceAction } from "@/lib/actions/resource.actions"
 import { createColumns } from "./columns"
-import { getProducts } from "@/lib/repository/product.repository"
-import { getOrders } from "@/lib/repository/order.repository"
+import { toast } from "sonner"
+
 
 interface ResourceTableProps<TData extends ResourceData> {
   data: TData[]
-  config: ResourceConfig
+  config: ResourceConfig,
+  resource: string
 }
 
 export function ResourceTable<
@@ -51,6 +49,7 @@ export function ResourceTable<
 >({
   data,
   config,
+  resource
 }: ResourceTableProps<TData>) {
   const [sorting, setSorting] =
     React.useState<SortingState>([])
@@ -70,11 +69,23 @@ export function ResourceTable<
       pageSize: 10,
     })
 
+  const router = useRouter()
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteResourceAction(resource, id)
+      router.refresh()
+      console.log("Deleted Successfully!")
+      toast.success("Deleted Successfully!")
+    } catch (error) {
+      console.error("Error deleting resource:", error)
+    }
+  }
+
   const columns = React.useMemo<
     ColumnDef< DataTableFeatures,TData>[]
   >(
-    () => createColumns<TData>(config),
-    [config]
+    () => createColumns<TData>(config, resource, handleDelete),
+    [config, resource, handleDelete]
   )
 
   const table = useTable<
@@ -265,6 +276,9 @@ export function ResourceTable<
         </Button>
 
       </div>
+
+
+
 
     </div>
   )

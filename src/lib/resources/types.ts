@@ -18,7 +18,16 @@ export interface ResourceField {
     type: FieldType
     required?: boolean
     options?: ResourceOptions[]
-
+    relation?: {
+        resource: string
+        labelField: string
+        valueField: string
+        displayField: string
+    }
+    media?: {
+        accept: string
+        maxSize?: number
+    }
 }
 
 export interface ResourceConfig {
@@ -29,4 +38,7 @@ export interface ResourceConfig {
 
 export type ResourceData = {
   id: string | number
+  name: string
+  slug?: string
+  [key: string]: unknown
 }
