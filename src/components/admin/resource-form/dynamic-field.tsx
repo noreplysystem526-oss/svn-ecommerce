@@ -11,16 +11,19 @@ export function TextareaDemo() {
 import type { ResourceField, ResourceOptions } from "@/lib/resources/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import { MediaField } from "./media-field"
+import { getMediaFolder } from "@/lib/resources/field-utils"
 
 type DynamicFieldProps = {
+    resource: string
     field: ResourceField
     value: unknown
     error?: string
     onChange: (value: unknown) => void
     relationOptions?: ResourceOptions[]
+    onUploadingChange?: (uploading: boolean) => void
 }
 
-export function DynamicField({ field, value, onChange, error, relationOptions }: DynamicFieldProps) {
+export function DynamicField({ resource, field, value, onChange, error, relationOptions, onUploadingChange }: DynamicFieldProps) {
     const renderField = () => {
         switch (field.type) {
             case "text":
@@ -82,7 +85,10 @@ export function DynamicField({ field, value, onChange, error, relationOptions }:
             case "media":
                 return (
                     <MediaField value={String(value ?? "")}
+                                folder={getMediaFolder(field, resource)}
+                                accept={field.media?.accept}
                                 onChange={onChange}
+                                onUploadingChange={onUploadingChange}
                                 />
                 )
             case "relation":

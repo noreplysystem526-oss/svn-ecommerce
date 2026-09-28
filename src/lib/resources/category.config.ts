@@ -20,7 +20,7 @@ export const categoryConfig: ResourceConfig = {
         {
             name: "is_active",
             label: "Is Active",
-            type: "text",
+            type: "boolean",
             required: true,
         },
         {

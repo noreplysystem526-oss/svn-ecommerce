@@ -10,12 +10,12 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
+
 import type {
   ResourceConfig,
   ResourceOptions,
@@ -27,8 +27,8 @@ import {
 } from "@/lib/actions/resource.actions"
 
 import { validationSchemas } from "@/lib/validation"
-
 import { DynamicField } from "./dynamic-field"
+import { isFieldVisible } from "@/lib/resources/field-utils"
 
 interface ResourceFormProps {
   resource: string
@@ -56,7 +56,21 @@ export function ResourceForm({
   const [isSubmitting, setIsSubmitting] =
     useState(false)
 
+  // Số ảnh đang upload (form có thể có nhiều field media)
+  const [uploadingCount, setUploadingCount] =
+    useState(0)
+
+  const isUploading = uploadingCount > 0
+
   const router = useRouter()
+
+  const handleUploadingChange = (
+    uploading: boolean
+  ) => {
+    setUploadingCount((count) =>
+      uploading ? count + 1 : count - 1
+    )
+  }
 
   const handleChange = (
     fieldName: string,
@@ -67,7 +81,6 @@ export function ResourceForm({
       [fieldName]: value,
     }))
 
-    // Xóa lỗi của field khi user sửa lại
     setErrors((prev) => ({
       ...prev,
       [fieldName]: null,
@@ -79,22 +92,16 @@ export function ResourceForm({
   ) => {
     e.preventDefault()
 
-    // Không cho submit lần 2 khi request đang chạy
-    if (isSubmitting) {
+    // Chưa upload xong thì formData chưa có URL ảnh
+    if (isSubmitting || isUploading) {
       return
     }
 
-    // Bắt đầu loading
     setIsSubmitting(true)
-
-    // Chỉ để test loading UI
-    await new Promise((resolve) =>
-      setTimeout(resolve, 2000)
-    )
 
     try {
       // =========================
-      // 1. Lấy validation schema
+      // 1. Validation schema
       // =========================
 
       const schema =
@@ -109,23 +116,19 @@ export function ResourceForm({
       }
 
       // =========================
-      // 2. Validate form
+      // 2. Validate
       // =========================
 
       const result = schema.safeParse(formData)
 
       if (!result.success) {
-        const fieldErrors: Record<
-          string,
-          string
-        > = {}
+        const fieldErrors: Record<string, string> = {}
 
         result.error.issues.forEach((issue) => {
           const fieldName = issue.path[0]
 
           if (typeof fieldName === "string") {
-            fieldErrors[fieldName] =
-              issue.message
+            fieldErrors[fieldName] = issue.message
           }
         })
 
@@ -134,38 +137,36 @@ export function ResourceForm({
         return
       }
 
-      // Dữ liệu sau khi đã qua Zod
       const validatedData = result.data
-      console.log("form dt: ",formData)
-      console.log("vali data: ",validatedData)
+
+      console.log("form dt:", formData)
+      console.log("vali data:", validatedData)
 
       // =========================
-      // 3. Edit
+      // 3. EDIT
       // =========================
 
       if (mode === "edit") {
         const id = formData.id
 
         if (!id) {
-          throw new Error(
-            "Missing record Id!"
-          )
+          throw new Error("Missing record Id!")
         }
+
         await updateResourceAction(
           resource,
           String(id),
           validatedData
         )
+        toast.success("Cập nhật thành công")
 
-        toast.success(
-          "Cập nhật thành công"
-        )
+        router.refresh()
 
         return
       }
 
       // =========================
-      // 4. Create
+      // 4. CREATE
       // =========================
 
       if (mode === "create") {
@@ -175,9 +176,7 @@ export function ResourceForm({
             validatedData
           )
 
-        toast.success(
-          "Tạo thành công"
-        )
+        toast.success("Tạo thành công")
 
         router.push(
           `/admin/${resource}/${created.slug}`
@@ -190,20 +189,22 @@ export function ResourceForm({
       )
 
       toast.error(
-        "Có lỗi xảy ra khi lưu dữ liệu"
+        error instanceof Error
+          ? error.message
+          : "Có lỗi xảy ra khi lưu dữ liệu"
       )
     } finally {
-      // Kết thúc loading
       setIsSubmitting(false)
     }
   }
 
+  const formFields = config.fields.filter((field) => isFieldVisible(field, "form"))
   return (
     <form
       onSubmit={handleSubmit}
       className="space-y-6"
     >
-      {config.fields.map((field) => (
+      {formFields.map((field) => (
         <div
           key={field.name}
           className="space-y-2"
@@ -219,6 +220,7 @@ export function ResourceForm({
           </Label>
 
           <DynamicField
+            resource={resource}
             field={field}
             value={formData[field.name]}
             onChange={(value) =>
@@ -234,44 +236,58 @@ export function ResourceForm({
             relationOptions={
               relationOptions?.[field.name]
             }
+            onUploadingChange={handleUploadingChange}
           />
         </div>
       ))}
 
       <Button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || isUploading}
       >
         {isSubmitting
           ? "Saving..."
-          : mode === "create"
+          : isUploading
+            ? "Uploading..."
+            : mode === "create"
             ? "Create"
             : "Save"}
       </Button>
 
-            <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="text-red-600 hover:underline" variant="outline"
-                  >Back</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-sm">
-                  
-                  <DialogHeader>
-                    <DialogDescription>
-                      Are you sure you want to go back? Your change will not be saved
-                    </DialogDescription>
-                  </DialogHeader>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button
+            type="button"
+            className="text-red-600 hover:underline"
+            variant="outline"
+          >
+            Back
+          </Button>
+        </DialogTrigger>
 
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">Cancel</Button>
-                    </DialogClose>
-                    <Button asChild>
-                        <Link href={`/admin/${resource}`}>Continue</Link>
-                      </Button>
-                  </DialogFooter>
-                </DialogContent>
-            </Dialog>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogDescription>
+              Are you sure you want to go back?
+              Your change will not be saved.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">
+                Cancel
+              </Button>
+            </DialogClose>
+
+            <Button asChild>
+              <Link href={`/admin/${resource}`}>
+                Continue
+              </Link>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </form>
   )
 }

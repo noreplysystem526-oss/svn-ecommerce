@@ -14,8 +14,8 @@ import {
 } from "@/lib/repository/product-images.repository"
 
 import {
-  ProductImageUpload,
-} from "@/components/admin/product-images/product-image-upload"
+  ProductImageManager,
+} from "@/components/admin/product-images/product-image-manager"
 
 import type { ProductImage } from "@/lib/resources/product-image.types"
 
@@ -74,7 +74,7 @@ export default async function ResourceDetailPage({
         />
 
         {resource === "products" && (
-          <ProductImageUpload
+          <ProductImageManager
             productId={String(item.id)}
             initialImages={productImages}
           />

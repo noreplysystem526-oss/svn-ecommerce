@@ -18,6 +18,7 @@ export const productConfig: ResourceConfig = {
             label: "Image",
             type: "media",
             required: false,
+            showIn: ["table"]
         },
         {
             name: "price",

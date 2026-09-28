@@ -7,6 +7,8 @@ export type FieldType =
 | "rich_text"
 | "boolean"
 
+export type FieldView = "table" | "form"
+
 export interface ResourceOptions{
     label:string
     value:string
@@ -25,9 +27,11 @@ export interface ResourceField {
         displayField: string
     }
     media?: {
-        accept: string
+        accept?: string
         maxSize?: number
+        folder?: string
     }
+    showIn?: FieldView[]
 }
 
 export interface ResourceConfig {
