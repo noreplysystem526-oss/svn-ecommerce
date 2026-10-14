@@ -21,12 +21,23 @@ const {
  } = await supabase.auth.getUser()
 
  if(!user){
-    redirect("/login")
+    redirect("/login?redirectTo=/admin")
  }
 
+ const {data: profile, error} = await supabase
+    .from('profiles')
+    .select('full_name,role')
+    .eq("id",user.id)
+    .single()
+
+if(error || profile?.role !== "admin"){
+    redirect("/")
+}
+
  const NavUser = {
-    name: user.email ?? "",
+    name: profile.full_name ?? "",
     email: user.email ?? "",
+    
     avatar: "/avatars/shadcn.jpg"
  }
 

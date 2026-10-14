@@ -18,6 +18,9 @@ import {
 } from "@/components/admin/product-images/product-image-manager"
 
 import type { ProductImage } from "@/lib/resources/product-image.types"
+import { ProductVariantsSection } from "@/components/admin/products/product-variants-section"
+import { getProductVariants } from "@/lib/repository/product-variant.repository"
+
 
 interface PageProps {
   params: Promise<{
@@ -50,9 +53,14 @@ export default async function ResourceDetailPage({
   }
 
   let productImages: ProductImage[] = []
+  let variants: any[] = []
 
   if (resource === "products") {
     productImages = await getProductImages(
+      String(item.id)
+    )
+
+    variants = await getProductVariants(
       String(item.id)
     )
   }
@@ -74,10 +82,18 @@ export default async function ResourceDetailPage({
         />
 
         {resource === "products" && (
-          <ProductImageManager
-            productId={String(item.id)}
-            initialImages={productImages}
-          />
+          <>
+            <ProductVariantsSection
+              productId={String(item.id)}
+              initialVariants={variants}
+            />
+
+            <ProductImageManager
+              productId={String(item.id)}
+              initialImages={productImages}
+            />
+          </>
+
         )}
       </div>
     </div>

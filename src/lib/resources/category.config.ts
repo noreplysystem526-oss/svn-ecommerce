@@ -1,6 +1,7 @@
 // src/lib/resources/category.config.ts
 
 import type { ResourceConfig } from "./types";
+import { getProductBySlug } from "@/lib/repository/product.repository"
 
 export const categoryConfig: ResourceConfig = {
     title: "Category",
@@ -10,7 +11,7 @@ export const categoryConfig: ResourceConfig = {
         {
             name: "description",
             label: "Description",
-            type: "rich_text",
+            type: "text",
         },
         {
             name: "image_url",

@@ -2,18 +2,20 @@ import { productConfig } from "./product.config";
 import { orderConfig } from './order.config';
 import { categoryConfig } from "./category.config";
 import { brandConfig } from "./brand.config";
-import { getProductBySlug, getBrandBySlug, getCategoryBySlug, getOrderBySlug, getBrandsForSelect, getCategoriesForSelect } from "@/lib/repository";
+import { customerConfig } from "./customer.config";
+import { getProductBySlug, getBrandBySlug, getCategoryBySlug, getOrderBySlug, getBrandsForSelect, getCategoriesForSelect, getCustomerById } from "@/lib/repository";
 import { updateProduct, createProduct, deleteProduct } from "@/lib/actions/product.actions";
 import { updateOrder, createOrder, deleteOrder } from "@/lib/actions/order.actions";
 import { updateCategory, createCategory, deleteCategory } from "@/lib/actions/category.actions";
 import { updateBrand, createBrand, deleteBrand } from "@/lib/actions/brand.actions";
 
+
 export const resourceConfig = {
     products: productConfig,
     orders: orderConfig,
     categories: categoryConfig,
-    brands: brandConfig
-    
+    brands: brandConfig,
+    customers: customerConfig
 } as const
 
 export type ResourceName = keyof typeof resourceConfig
@@ -22,7 +24,7 @@ const updateRepositories = {
     products: updateProduct,
     orders: updateOrder,
     categories: updateCategory,
-    brands: updateBrand
+    brands: updateBrand,
 } as const
 
 export async function updateResource(
@@ -44,6 +46,7 @@ const findRepositories = {
   orders: getOrderBySlug,
   categories: getCategoryBySlug,
   brands: getBrandBySlug,
+  customers: getCustomerById
 } as const
 
 export async function getResourceBySlug(
@@ -65,7 +68,7 @@ const createRepositories = {
     products: createProduct,
     orders: createOrder,
     categories: createCategory,
-    brands: createBrand
+    brands: createBrand,
 } as const
 
 export async function createResource(

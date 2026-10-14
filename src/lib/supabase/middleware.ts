@@ -31,7 +31,7 @@ export async function updateSession(request: NextRequest) {
         },
       },
     }
-  );
+  );  
 
   // IMPORTANT:
   // Không xóa đoạn này nếu đang dùng Supabase Auth.

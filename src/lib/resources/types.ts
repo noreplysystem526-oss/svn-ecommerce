@@ -36,6 +36,8 @@ export interface ResourceField {
 
 export interface ResourceConfig {
     title: string
+    description: string
+    related: []
     singularLabel: string
     fields: ResourceField[]
 }

@@ -17,13 +17,21 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-export function LoginForm() {
+interface LoginFormProps {
+  redirectTo?: string
+}
+
+export function LoginForm({
+  redirectTo = "/",
+}: LoginFormProps) {
   const router = useRouter()
   const supabase = createClient()
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+
+
 
   async function handleLogin(
     e: React.FormEvent<HTMLFormElement>
@@ -35,7 +43,7 @@ export function LoginForm() {
     setLoading(true)
 
     try {
-      const { error } =
+      const { data, error } =
         await supabase.auth.signInWithPassword({
           email,
           password,
@@ -45,9 +53,24 @@ export function LoginForm() {
         throw error
       }
 
-      toast.success("Đăng nhập thành công")
+      const { data: { user },
+      } = await supabase.auth.getUser()
 
-      router.replace("/admin")
+      if(!user){
+        return 
+      }
+      toast.success("Đăng nhập thành công")
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id",user.id)
+        .single()
+
+      if(profile?.role === "admin"){
+        router.replace("/admin")
+      }else{
+        router.replace(redirectTo)
+      } 
       router.refresh()
     } catch (error) {
       toast.error(
@@ -65,9 +88,9 @@ export function LoginForm() {
       <CardHeader>
         <CardTitle>Đăng nhập</CardTitle>
 
-        <CardDescription>
+        {/* <CardDescription>
           Đăng nhập vào hệ thống quản trị
-        </CardDescription>
+        </CardDescription> */}
       </CardHeader>
 
       <CardContent>

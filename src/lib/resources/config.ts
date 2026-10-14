@@ -1,4 +1,5 @@
 import type { ResourceConfig } from "./types";
+import { Product } from "@/types/database";
 
 export const resourceConfigs = {
     products: {
@@ -152,7 +153,7 @@ export const resourceConfigs = {
         {
             name: "description",
             label: "Description",
-            type: "rich_text",
+            type: "text",
         },
         {
             name: "image_url",
@@ -176,6 +177,38 @@ export const resourceConfigs = {
             label: "Slug",
             type: "text",
             required: true,
+        }
+    ]
+    },
+    customers: {
+    title: "Customer",
+    singularLabel: "Customer",
+
+    fields: [
+        {
+            name: "description",
+            label: "Description",
+            type: "text",
+        },
+        {
+            name: "full_name",
+            label: "Full Name",
+            type: "text",
+        },
+        {
+            name: "phone",
+            label: "Phone",
+            type: "text"
+        },
+        {
+            name: "avatar_url",
+            label: "Avatar",
+            type: "text"
+        },
+        {
+            name: "role",
+            label: "Role",
+            type: "text"
         }
     ]
     }

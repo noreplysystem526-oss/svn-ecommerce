@@ -4,6 +4,7 @@ import type { ResourceConfig } from "./types";
 
 export const productConfig: ResourceConfig = {
     title: "Products",
+    description: "Danh sách sản phẩm",
     singularLabel: "Product",
 
     fields: [

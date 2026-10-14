@@ -56,6 +56,25 @@ export async function getCategoryBySlug(slug: string) {
   return data
 }
 
+export async function getFeatureCategories() {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("categories")
+    .select(`
+      id,
+      name,
+      slug,
+      description,
+      image_url,
+      is_active
+    `)
+    .eq("is_active","true")
+    .order("created_at", { ascending: false })
+
+    return data
+}
+
 export async function getCategoriesForSelect(){
   const supabase = await createClient()
 
